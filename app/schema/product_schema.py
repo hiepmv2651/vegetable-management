@@ -1,15 +1,33 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
+class CategoryBase(BaseModel):
+    name: str
+
+    class Config:
+        from_attributes = True
 
 
 class ProductGet(BaseModel):
     name: str
     description: str | None
     price: float
-    category_id: int
     image_url: str | None
     stock_quantity: int
-    category_name: str
-    
+    category: CategoryBase
+
     class Config:
         from_attributes = True
         
+class ProductCreate(BaseModel):
+    name: str
+    description: str | None = None
+    price: float = Field(..., gt=0, description="Must be greater than 0")
+    stock_quantity: int
+    category_id: int
+
+    class Config:
+        from_attributes = True
+        
+class ProductUpdate(ProductCreate):
+    pass
